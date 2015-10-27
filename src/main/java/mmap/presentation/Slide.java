@@ -1,23 +1,27 @@
 package mmap.presentation;
 
+import mmap.mindmap.MapNode;
+import mmap.mindmap.MapNodeContent;
+
 public class Slide {
-    private String content;
+    private String title;
     private Integer dataX;
     private Integer dataY;
+    private MapNodeContent content;
 
-
-    public Slide(String content, Integer dataX, Integer dataY) {
-        this.content = content;
-        this.dataX = dataX;
-        this.dataY = dataY;
+    public Slide(MapNode root) {
+        this.title = root.getTitle();
+        this.dataX = root.getPosition().getX();
+        this.dataY = root.getPosition().getY();
+        this.content = root.getContent();
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getDataX() {
@@ -40,4 +44,11 @@ public class Slide {
         dataX += delta;
     }
 
+    public MapNodeContent getContent() {
+        return content;
+    }
+
+    public void setContent(MapNodeContent content) {
+        this.content = content;
+    }
 }

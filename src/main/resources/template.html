@@ -16,7 +16,12 @@
     <div id="impress">
         {{#slides}}
         <div class="step slide" data-x="{{dataX}}" data-y="{{dataY}}">
-            {{content}}
+            <p>{{title}}</p>
+            {{#content}}
+                {{#hasImage}}
+                <img src="{{image}}">
+                {{/hasImage}}
+            {{/content}}
         </div>
         {{/slides}}
     </div>

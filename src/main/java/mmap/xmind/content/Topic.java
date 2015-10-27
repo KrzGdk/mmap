@@ -1,9 +1,7 @@
 package mmap.xmind.content;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "topic")
 public class Topic {
 
     @XmlElement(name = "title")
@@ -11,6 +9,25 @@ public class Topic {
 
     @XmlElement(name = "children")
     private Children children;
+
+    @XmlElement(namespace = "http://www.w3.org/1999/xhtml", name = "img")
+    private Img img;
+
+    public Img getImg() {
+        return img;
+    }
+
+    public void setImg(Img img) {
+        this.img = img;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setChildren(Children children) {
+        this.children = children;
+    }
 
     public String getTitle() {
         return title;
@@ -26,7 +43,7 @@ public class Topic {
     }
 
     public int getChildCount() {
-        return hasChildren()? children.getTopics().getTopics().size() : 0;
+        return hasChildren() ? children.getTopics().getTopics().size() : 0;
     }
 
     public boolean hasGrandChildren() {

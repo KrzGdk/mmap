@@ -9,18 +9,18 @@ import java.util.List;
 public class MapNode {
     private int level;
     private Position position;
-    private String content;
+    private String title;
+    private MapNodeContent content;
     private List<MapNode> children = new ArrayList<>();
 
-    public MapNode(Topic topic) {
-        this.level = 0;
-        this.content = topic.getTitle();
-        createChildren(topic);
+    MapNode(Topic topic) {
+        this(topic, 0);
     }
 
-    MapNode(Topic topic, int level) {
+    private MapNode(Topic topic, int level) {
         this.level = level;
-        this.content = topic.getTitle();
+        this.title = topic.getTitle();
+        this.content = MapNodeContentFactory.create(topic);
         createChildren(topic);
     }
 
@@ -57,12 +57,12 @@ public class MapNode {
         this.position = position;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<MapNode> getChildren() {
@@ -71,5 +71,13 @@ public class MapNode {
 
     public void setChildren(List<MapNode> children) {
         this.children = children;
+    }
+
+    public MapNodeContent getContent() {
+        return content;
+    }
+
+    public void setContent(MapNodeContent content) {
+        this.content = content;
     }
 }

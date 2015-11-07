@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "xmap-content")
-public class XmindContent {
+public class XmapContent {
 
     @XmlElement(name = "sheet")
     private Sheet sheet;

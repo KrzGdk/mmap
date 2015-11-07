@@ -1,9 +1,11 @@
 package mmap.presentation;
 
 import mmap.mindmap.MapNode;
-import mmap.mindmap.MapNodeContent;
+import mmap.mindmap.content.MapNodeContent;
 
 public class Slide {
+    private String cssClass;
+    private String cssSecondaryClass;
     private String title;
     private Integer dataX;
     private Integer dataY;
@@ -13,6 +15,9 @@ public class Slide {
         this.title = root.getTitle();
         this.dataX = root.getPosition().getX();
         this.dataY = root.getPosition().getY();
+        if(root.getCssClass() != null) {
+            this.cssClass = "xmap-" + root.getCssClass();
+        }
         this.content = root.getContent();
     }
 
@@ -40,15 +45,19 @@ public class Slide {
         this.dataY = dataY;
     }
 
-    public void moveX(int delta) {
-        dataX += delta;
-    }
-
     public MapNodeContent getContent() {
         return content;
     }
 
     public void setContent(MapNodeContent content) {
         this.content = content;
+    }
+
+    public String getCssClass() {
+        return cssClass;
+    }
+
+    public void setCssClass(String cssClass) {
+        this.cssClass = cssClass;
     }
 }

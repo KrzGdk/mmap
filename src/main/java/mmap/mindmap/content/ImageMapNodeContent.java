@@ -1,4 +1,4 @@
-package mmap.mindmap;
+package mmap.mindmap.content;
 
 public class ImageMapNodeContent extends MapNodeContent {
 
@@ -11,6 +11,11 @@ public class ImageMapNodeContent extends MapNodeContent {
     @Override
     public boolean hasImage() {
         return true;
+    }
+
+    @Override
+    public boolean hasText() {
+        return false;
     }
 
     public String getImage() {

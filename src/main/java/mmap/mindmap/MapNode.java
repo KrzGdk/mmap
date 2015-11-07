@@ -1,12 +1,15 @@
 package mmap.mindmap;
 
 import mmap.config.Configuration;
+import mmap.mindmap.content.MapNodeContent;
+import mmap.mindmap.content.MapNodeContentFactory;
 import mmap.xmind.content.Topic;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapNode {
+    private String cssClass;
     private int level;
     private Position position;
     private String title;
@@ -20,6 +23,7 @@ public class MapNode {
     private MapNode(Topic topic, int level) {
         this.level = level;
         this.title = topic.getTitle();
+        this.cssClass = topic.getStyleId();
         this.content = MapNodeContentFactory.create(topic);
         createChildren(topic);
     }
@@ -79,5 +83,13 @@ public class MapNode {
 
     public void setContent(MapNodeContent content) {
         this.content = content;
+    }
+
+    public String getCssClass() {
+        return cssClass;
+    }
+
+    public void setCssClass(String cssClass) {
+        this.cssClass = cssClass;
     }
 }

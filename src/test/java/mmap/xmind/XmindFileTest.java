@@ -1,14 +1,12 @@
 package mmap.xmind;
 
-import mmap.xmind.content.XmindContent;
+import mmap.xmind.content.XmapContent;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class XmindFileTest {
 
@@ -21,7 +19,7 @@ public class XmindFileTest {
 
     @Test
     public void testGetContent() throws Exception {
-        XmindContent content = xmindFile.getContent();
+        XmapContent content = xmindFile.getContent();
         Assert.assertEquals("Preparation for a Conversation", content.getSheet().getTopic().getTitle());
     }
 }

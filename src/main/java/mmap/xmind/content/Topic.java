@@ -1,5 +1,6 @@
 package mmap.xmind.content;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 public class Topic {
@@ -10,8 +11,14 @@ public class Topic {
     @XmlElement(name = "children")
     private Children children;
 
+    @XmlElement(name = "notes")
+    private Notes notes;
+
     @XmlElement(namespace = "http://www.w3.org/1999/xhtml", name = "img")
     private Img img;
+
+    @XmlAttribute(name = "style-id")
+    private String styleId;
 
     public Img getImg() {
         return img;
@@ -48,5 +55,21 @@ public class Topic {
 
     public boolean hasGrandChildren() {
         return hasChildren() && getChildren().getTopics().getTopics().stream().anyMatch(Topic::hasChildren);
+    }
+
+    public String getStyleId() {
+        return styleId;
+    }
+
+    public void setStyleId(String styleId) {
+        this.styleId = styleId;
+    }
+
+    public Notes getNotes() {
+        return notes;
+    }
+
+    public void setNotes(Notes notes) {
+        this.notes = notes;
     }
 }

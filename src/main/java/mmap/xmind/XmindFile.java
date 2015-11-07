@@ -1,6 +1,7 @@
 package mmap.xmind;
 
-import mmap.xmind.content.XmindContent;
+import mmap.xmind.content.XmapContent;
+import mmap.xmind.styles.XmapStyles;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,7 +14,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class XmindFile {
 
@@ -23,12 +23,20 @@ public class XmindFile {
         zip = new ZipFile(xmindFile);
     }
 
-    public XmindContent getContent() throws IOException, JAXBException {
+    public XmapContent getContent() throws IOException, JAXBException {
         ZipEntry contentEntry = zip.getEntry("content.xml");
         InputStream contentInputStream = zip.getInputStream(contentEntry);
-        JAXBContext ctx = JAXBContext.newInstance(XmindContent.class);
+        JAXBContext ctx = JAXBContext.newInstance(XmapContent.class);
         Unmarshaller um = ctx.createUnmarshaller();
-        return (XmindContent) um.unmarshal(contentInputStream);
+        return (XmapContent) um.unmarshal(contentInputStream);
+    }
+
+    public XmapStyles getStyles() throws IOException, JAXBException {
+        ZipEntry contentEntry = zip.getEntry("styles.xml");
+        InputStream contentInputStream = zip.getInputStream(contentEntry);
+        JAXBContext ctx = JAXBContext.newInstance(XmapStyles.class);
+        Unmarshaller um = ctx.createUnmarshaller();
+        return (XmapStyles) um.unmarshal(contentInputStream);
     }
 
     public Map<String, InputStream> getImages() throws IOException {

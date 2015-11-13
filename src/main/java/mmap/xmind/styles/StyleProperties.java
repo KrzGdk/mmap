@@ -9,6 +9,9 @@ public class StyleProperties {
     @XmlAttribute(name = "line-color")
     private String lineColor;
 
+    @XmlAttribute(namespace = "http://www.w3.org/1999/XSL/Format", name = "color")
+    private String color;
+
     public String getFill() {
         return fill;
     }
@@ -23,5 +26,9 @@ public class StyleProperties {
 
     public void setLineColor(String lineColor) {
         this.lineColor = lineColor;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

@@ -25,9 +25,12 @@ public class StylesConverter {
     }
 
     private CssSelector createBodySelector(XmapStyles styles) {
-        Style automaticMapStyle = styles.getAutomaticStyles().getStyles().stream()
-                .filter(s -> s.getType().equals("map"))
-                .findFirst().get();
+        Style automaticMapStyle = null;
+        if (styles.getAutomaticStyles() != null) {
+            automaticMapStyle = styles.getAutomaticStyles().getStyles().stream()
+                    .filter(s -> s.getType().equals("map"))
+                    .findFirst().orElse(null);
+        }
         String bgColorHex = styles.getStyles().getStyles().stream()
                 .filter(s -> s.getType().equals("map"))
                 .findFirst().orElse(automaticMapStyle).getMapProperties().getFill();

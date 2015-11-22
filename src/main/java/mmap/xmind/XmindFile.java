@@ -7,10 +7,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -43,9 +40,14 @@ public class XmindFile {
         List<? extends ZipEntry> entries = Collections.list(zip.entries());
         Map<String, InputStream> images = new HashMap<>();
 
-        List<ZipEntry> attachmentsEntries = entries.stream()
-                .filter(e -> e.getName().startsWith("attachments/"))
-                .collect(Collectors.toList());
+        List<ZipEntry> attachmentsEntries = new ArrayList<>();
+
+        for (ZipEntry entry : entries) {
+            if (entry.getName().startsWith("attachments/")) {
+                attachmentsEntries.add(entry);
+            }
+        }
+
 
         for (ZipEntry attachmentsEntry : attachmentsEntries) {
             images.put(attachmentsEntry.getName().split("/")[1], zip.getInputStream(attachmentsEntry));

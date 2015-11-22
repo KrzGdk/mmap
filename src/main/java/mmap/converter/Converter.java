@@ -13,8 +13,10 @@ import mmap.xmind.content.XmapContent;
 import mmap.xmind.styles.Style;
 import mmap.xmind.styles.XmapStyles;
 
+import org.apache.commons.io.FileUtils;
 import javax.xml.bind.JAXBException;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -37,7 +39,8 @@ public class Converter {
         XmapStyles styles = xmindFile.getStyles();
         List<CssSelector> cssSelectors = stylesConverter.createStyles(styles);
 
-        Template template = Mustache.compiler().compile(new FileReader(new File("src/main/resources/template.html")));
+        InputStream templateStream = getClass().getResourceAsStream("/template.html");
+        Template template = Mustache.compiler().compile(new InputStreamReader(templateStream));
         List<Slide> slideList = createSlides(xmindFile, cssSelectors);
         createImages(xmindFile.getImages());
 
@@ -50,6 +53,12 @@ public class Converter {
         }
         System.out.println("done");
         return null;
+    }
+
+    private String readPath(URL resource) {
+        if (System.getProperty("os.name").contains("indow") && resource.getPath().contains("!"))
+            return ".." + resource.getPath().substring(resource.getPath().indexOf("!") + 1);
+        else return resource.getPath();
     }
 
 
@@ -70,12 +79,20 @@ public class Converter {
         if (!cssDir.exists()) {
             cssDir.mkdir();
         }
-        File impressJsFile = new File("src/main/resources/js/impress.js");
-        Files.copy(impressJsFile.toPath(), new File(Configuration.JS_DIR + File.separator + "impress.js").toPath(),
-                StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-        File styleFile = new File("src/main/resources/css/demo.css");
-        Files.copy(styleFile.toPath(), new File(Configuration.CSS_DIR + File.separator + "demo.css").toPath(),
-                StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        InputStream impressJs = getClass().getResourceAsStream("/js/impress.js");
+//        URL url = getClass().getResource("/js/impress.js");
+//        System.out.println(url.getFile());
+//        File impressJsFile = FileUtils.toFile(url);
+//        System.out.println(impressJsFile.getAbsolutePath());
+//        Files.copy(impressJsFile.toPath(), new File(Configuration.JS_DIR + File.separator + "impress.js").toPath(),
+//                StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        PrintWriter writer = new PrintWriter(Configuration.JS_DIR + File.separator + "impress.js", "UTF-8");
+        writer.println(impressJs);
+        writer.close();
+        InputStream demoCss = getClass().getResourceAsStream("/css/demo.css");
+        writer = new PrintWriter(Configuration.CSS_DIR + File.separator + "demo.css", "UTF-8");
+        writer.println(demoCss);
+        writer.close();
     }
 
     private void createImages(Map<String, InputStream> images) throws IOException {

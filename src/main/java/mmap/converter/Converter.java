@@ -14,9 +14,12 @@ import mmap.xmind.styles.Style;
 import mmap.xmind.styles.XmapStyles;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -44,7 +47,7 @@ public class Converter {
         List<Slide> slideList = createSlides(xmindFile, cssSelectors);
         createImages(xmindFile.getImages());
 
-        try (Writer out = new FileWriter(Configuration.OUTPUT_ROOT_DIR + File.separator + "test.html")) {
+        try (Writer out = new FileWriter(Configuration.OUTPUT_ROOT_DIR + File.separator + FilenameUtils.getBaseName(file.getAbsolutePath()) + ".html")) {
             template.execute(new Object() {
                 Object slides = slideList;
                 Object slidesCount = slideList.size();
@@ -86,13 +89,11 @@ public class Converter {
 //        System.out.println(impressJsFile.getAbsolutePath());
 //        Files.copy(impressJsFile.toPath(), new File(Configuration.JS_DIR + File.separator + "impress.js").toPath(),
 //                StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-        PrintWriter writer = new PrintWriter(Configuration.JS_DIR + File.separator + "impress.js", "UTF-8");
-        writer.println(impressJs);
-        writer.close();
+        Files.copy(impressJs, new File(Configuration.JS_DIR + File.separator + "impress.js").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        impressJs.close();
         InputStream demoCss = getClass().getResourceAsStream("/css/demo.css");
-        writer = new PrintWriter(Configuration.CSS_DIR + File.separator + "demo.css", "UTF-8");
-        writer.println(demoCss);
-        writer.close();
+        Files.copy(demoCss, new File(Configuration.CSS_DIR + File.separator + "demo.css").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        demoCss.close();
     }
 
     private void createImages(Map<String, InputStream> images) throws IOException {

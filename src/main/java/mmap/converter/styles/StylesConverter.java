@@ -14,26 +14,29 @@ public class StylesConverter {
 
     public List<CssSelector> createStyles(XmapStyles styles) throws IOException {
         List<CssSelector> cssSelectors = new ArrayList<>();
-        for (Style style : styles.getStyles().getStyles()) {
+        List<Style> allStyles = new ArrayList<>();
+        if (styles.getStyles() != null) {
+            allStyles.addAll(styles.getStyles().getStyles());
+        }
+        if (styles.getAutomaticStyles() != null) {
+            allStyles.addAll(styles.getAutomaticStyles().getStyles());
+        }
+        for (Style style : allStyles) {
+            style.setId(style.getId().replaceAll("[^A-Za-z0-9]", ""));
             cssSelectors.addAll(createCssClasses(style));
         }
-        CssSelector body = createBodySelector(styles);
+        CssSelector body = createBodySelector(allStyles);
         cssSelectors.add(body);
         StylesWriter stylesWriter = new StylesWriter();
         stylesWriter.write(cssSelectors);
         return cssSelectors;
     }
 
-    private CssSelector createBodySelector(XmapStyles styles) {
-        Style automaticMapStyle = null;
-        if (styles.getAutomaticStyles() != null) {
-            automaticMapStyle = styles.getAutomaticStyles().getStyles().stream()
+    private CssSelector createBodySelector(List<Style> styles) {
+        String bgColorHex = styles.stream()
                     .filter(s -> s.getType().equals("map"))
-                    .findFirst().orElse(null);
-        }
-        String bgColorHex = styles.getStyles().getStyles().stream()
-                .filter(s -> s.getType().equals("map"))
-                .findFirst().orElse(automaticMapStyle).getMapProperties().getFill();
+                    .findFirst().get().getMapProperties().getFill();
+
         CssSelector body = new CssSelector();
         body.setName("body");
         body.getProperties().put("background-color", bgColorHex);

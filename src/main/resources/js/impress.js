@@ -309,6 +309,7 @@
                         z: toNumber(data.rotateZ || data.rotate)
                     },
                     scale: toNumber(data.scale, 1),
+                    parent: toNumber(data.parent),
                     el: el
                 };
             
@@ -550,6 +551,7 @@
         
         // `prev` API function goes to previous step (in document order)
         var prev = function () {
+            downBackStack.length = 0;
             var prev = steps.indexOf( activeStep ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
             
@@ -558,11 +560,23 @@
         
         // `next` API function goes to next step (in document order)
         var next = function () {
+            downBackStack.length = 0;
             var next = steps.indexOf( activeStep ) + 1;
             next = next < steps.length ? steps[ next ] : steps[ 0 ];
             
             return goto(next);
         };
+
+        var downBackStack = [];
+
+        var up = function () {
+            downBackStack.push(activeStep);
+            return goto(steps[activeStep.dataset.parent]);
+        }
+
+        var down = function () {
+            return goto(downBackStack.pop());
+        }
         
         // Adding some useful classes to step elements.
         //
@@ -635,7 +649,9 @@
             init: init,
             goto: goto,
             next: next,
-            prev: prev
+            prev: prev,
+            up: up,
+            down: down
         });
 
     };
@@ -706,16 +722,20 @@
                 switch( event.keyCode ) {
                     case 33: // pg up
                     case 37: // left
+                        api.prev();
+                        break;
                     case 38: // up
-                             api.prev();
-                             break;
+                        api.up();
+                        break;
                     case 9:  // tab
                     case 32: // space
                     case 34: // pg down
                     case 39: // right
+                        api.next();
+                        break;
                     case 40: // down
-                             api.next();
-                             break;
+                        api.down();
+                        break;
                 }
                 
                 event.preventDefault();

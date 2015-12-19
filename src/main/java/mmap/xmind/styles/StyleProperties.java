@@ -12,6 +12,9 @@ public class StyleProperties {
     @XmlAttribute(namespace = "http://www.w3.org/1999/XSL/Format", name = "color")
     private String color;
 
+    @XmlAttribute(name = "multi-line-colors")
+    private String multiLineColors;
+
     public String getFill() {
         return fill;
     }
@@ -30,5 +33,13 @@ public class StyleProperties {
 
     public String getColor() {
         return color;
+    }
+
+    public String getMultiLineColors() {
+        return multiLineColors;
+    }
+
+    public void setMultiLineColors(String multiLineColors) {
+        this.multiLineColors = multiLineColors;
     }
 }

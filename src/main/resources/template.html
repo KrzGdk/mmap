@@ -16,7 +16,7 @@
 
 <div id="impress">
     {{#slides}}
-    <div class="step slide {{#cssClass}}{{cssClass}}{{/cssClass}}" data-x="{{dataX}}" data-y="{{dataY}}">
+    <div class="step{{#cssClasses}} {{.}}{{/cssClasses}}" data-x="{{dataX}}" data-y="{{dataY}}" data-parent="{{parent}}">
         <h1 style="height: 40px;">{{title}}</h1>
 
         <div class="content">

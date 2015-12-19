@@ -5,10 +5,9 @@ import mmap.xmind.styles.XmapStyles;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StylesConverter {
 
@@ -20,6 +19,7 @@ public class StylesConverter {
         }
         if (styles.getAutomaticStyles() != null) {
             allStyles.addAll(styles.getAutomaticStyles().getStyles());
+            createAutomaticLineStyles(styles.getAutomaticStyles().getStyles(), cssSelectors);
         }
         for (Style style : allStyles) {
             style.setId(style.getId().replaceAll("[^A-Za-z0-9]", ""));
@@ -30,6 +30,35 @@ public class StylesConverter {
         StylesWriter stylesWriter = new StylesWriter();
         stylesWriter.write(cssSelectors);
         return cssSelectors;
+    }
+
+    public int countAutomaticLineStyles(List<Style> styles) {
+        Optional<Style> topic = styles.stream().filter(style -> style.getTopicProperties() != null && style.getType().equals("topic")
+                && style.getTopicProperties().getMultiLineColors() != null).findFirst();
+        if (topic.isPresent()) {
+            return topic.get().getTopicProperties().getMultiLineColors().split("\\s+").length;
+        }
+        return 0;
+    }
+
+    private void createAutomaticLineStyles(List<Style> styles, List<CssSelector> cssSelectors) {
+        AtomicInteger index = new AtomicInteger();
+        styles.stream().filter(style -> style.getTopicProperties() != null && style.getType().equals("topic")
+                && style.getTopicProperties().getMultiLineColors()!= null).forEach(s -> {
+            List<String> automaticLineColors = Arrays.asList(s.getTopicProperties().getMultiLineColors().split("\\s+"));
+            for (String automaticLineColor : automaticLineColors) {
+                CssClass cssClass = new CssClass();
+                cssClass.setId("autoLine" + index.incrementAndGet() + " .footer");
+                cssClass.getProperties().put("background-color", automaticLineColor);
+
+                CssClass cssTextClass = new CssClass();
+                Color bgColor = Color.decode(automaticLineColor);
+                cssTextClass.setId("autoLine" + index.get() + " .footer p");
+                cssTextClass.getProperties().put("color", getFontColor(bgColor));
+                cssSelectors.add(cssClass);
+                cssSelectors.add(cssTextClass);
+            }
+        });
     }
 
     private CssSelector createBodySelector(List<Style> styles) {
@@ -74,7 +103,7 @@ public class StylesConverter {
         cssSecondaryClass.setId(style.getId() + " .footer");
         cssSecondaryClass.getProperties().put("background-color", style.getTopicProperties().getLineColor());
         CssClass cssTextClass = new CssClass();
-        cssTextClass.setId(style.getId() + " p");
+        cssTextClass.setId(style.getId() + " .footer p");
         Color bgColor = Color.decode(style.getTopicProperties().getLineColor());
         cssTextClass.getProperties().put("color", getFontColor(bgColor));
         return Arrays.asList(cssSecondaryClass, cssTextClass);

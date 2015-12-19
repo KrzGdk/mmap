@@ -3,21 +3,23 @@ package mmap.presentation;
 import mmap.mindmap.MapNode;
 import mmap.mindmap.content.MapNodeContent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Slide {
-    private String cssClass;
+    private List<String> cssClasses = new ArrayList<>();
     private String cssSecondaryClass;
     private String title;
     private Integer dataX;
     private Integer dataY;
     private MapNodeContent content;
+    private int parent;
 
     public Slide(MapNode root) {
         this.title = root.getTitle();
         this.dataX = root.getPosition().getX();
         this.dataY = root.getPosition().getY();
-        if(root.getCssClass() != null) {
-            this.cssClass = "xmap-" + root.getCssClass();
-        }
+        root.getCssClasses().forEach(s -> this.cssClasses.add("xmap-" + s));
         this.content = root.getContent();
     }
 
@@ -53,11 +55,15 @@ public class Slide {
         this.content = content;
     }
 
-    public String getCssClass() {
-        return cssClass;
+    public List<String> getCssClasses() {
+        return cssClasses;
     }
 
-    public void setCssClass(String cssClass) {
-        this.cssClass = cssClass;
+    public void addCssClass(String cssClass) {
+        this.cssClasses.add(cssClass);
+    }
+
+    public void setParent(int parent) {
+        this.parent = parent;
     }
 }

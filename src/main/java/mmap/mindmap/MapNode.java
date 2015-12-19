@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapNode {
-    private String cssClass;
+    private List<String> cssClasses = new ArrayList<>();
     private int level;
     private Position position;
     private String title;
@@ -23,7 +23,9 @@ public class MapNode {
     private MapNode(Topic topic, int level) {
         this.level = level;
         this.title = topic.getTitle();
-        this.cssClass = topic.getStyleId();
+        if (topic.getStyleId() != null) {
+            this.cssClasses.add(topic.getStyleId());
+        }
         this.content = MapNodeContentFactory.create(topic);
         createChildren(topic);
     }
@@ -85,11 +87,19 @@ public class MapNode {
         this.content = content;
     }
 
-    public String getCssClass() {
-        return cssClass;
+    public List<String> getCssClasses() {
+        return cssClasses;
     }
 
-    public void setCssClass(String cssClass) {
-        this.cssClass = cssClass;
+    public void addCssClass(String cssClass) {
+        this.cssClasses.add(cssClass);
+    }
+
+    public void addCssClasses(List<String> cssClasses) {
+        this.cssClasses.addAll(cssClasses);
+    }
+
+    public int getLevel() {
+        return level;
     }
 }

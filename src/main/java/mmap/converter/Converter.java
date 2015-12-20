@@ -44,7 +44,11 @@ public class Converter {
 
         InputStream templateStream = getClass().getResourceAsStream("/template.html");
         Template template = Mustache.compiler().compile(new InputStreamReader(templateStream));
-        List<Slide> slideList = createSlides(xmindFile, cssSelectors, stylesConverter.countAutomaticLineStyles(styles.getAutomaticStyles().getStyles()));
+        int automaticStylesCount = 0;
+        if (styles.getAutomaticStyles() != null) {
+            automaticStylesCount = stylesConverter.countAutomaticLineStyles(styles.getAutomaticStyles().getStyles());
+        }
+        List<Slide> slideList = createSlides(xmindFile, cssSelectors, automaticStylesCount);
         createImages(xmindFile.getImages());
 
         try (Writer out = new OutputStreamWriter(new FileOutputStream(Configuration.OUTPUT_ROOT_DIR + File.separator + FilenameUtils.getBaseName(mindMapFile.getAbsolutePath()) + ".html"), Charset.forName("UTF-8").newEncoder())) {

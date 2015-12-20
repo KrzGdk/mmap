@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException, JAXBException {
         boolean revisitParent = false;
         List<String> params = Arrays.asList(args).stream().filter(s -> s.startsWith("-")).collect(Collectors.toList());
-        if (params.contains("-revisit-parent")) {
+        if (params.contains("--revisit-parent") || params.contains("-R")) {
             revisitParent = true;
         }
         String path = Arrays.asList(args).stream().filter(s -> !s.startsWith("-")).findFirst().orElseThrow(() -> new IllegalArgumentException("No input file"));

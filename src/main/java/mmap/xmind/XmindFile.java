@@ -15,7 +15,7 @@ import java.util.zip.ZipFile;
 
 public class XmindFile {
 
-    ZipFile zip;
+    private ZipFile zip;
 
     public XmindFile(File xmindFile) throws IOException {
         zip = new ZipFile(xmindFile);

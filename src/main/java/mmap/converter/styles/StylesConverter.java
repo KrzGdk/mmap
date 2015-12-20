@@ -44,7 +44,7 @@ public class StylesConverter {
     private void createAutomaticLineStyles(List<Style> styles, List<CssSelector> cssSelectors) {
         AtomicInteger index = new AtomicInteger();
         styles.stream().filter(style -> style.getTopicProperties() != null && style.getType().equals("topic")
-                && style.getTopicProperties().getMultiLineColors()!= null).forEach(s -> {
+                && style.getTopicProperties().getMultiLineColors() != null).forEach(s -> {
             List<String> automaticLineColors = Arrays.asList(s.getTopicProperties().getMultiLineColors().split("\\s+"));
             for (String automaticLineColor : automaticLineColors) {
                 CssClass cssClass = new CssClass();
@@ -63,8 +63,8 @@ public class StylesConverter {
 
     private CssSelector createBodySelector(List<Style> styles) {
         String bgColorHex = styles.stream()
-                    .filter(s -> s.getType().equals("map"))
-                    .findFirst().get().getMapProperties().getFill();
+                .filter(s -> s.getType().equals("map"))
+                .findFirst().get().getMapProperties().getFill();
 
         CssSelector body = new CssSelector();
         body.setName("body");

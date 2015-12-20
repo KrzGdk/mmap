@@ -1,23 +1,17 @@
 package mmap.converter;
 
-import com.samskivert.mustache.Mustache;
-import com.samskivert.mustache.Template;
 import mmap.config.Configuration;
 import mmap.converter.styles.CssSelector;
 import mmap.converter.styles.StylesConverter;
 import mmap.mindmap.MapNode;
 import mmap.mindmap.MindMap;
-import mmap.mindmap.content.EmptyMapNodeContent;
 import mmap.presentation.Slide;
 import mmap.xmind.XmindFile;
-import mmap.xmind.content.XmapContent;
 import mmap.xmind.styles.XmapStyles;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -34,16 +28,14 @@ public class Converter {
 
     public String convert(File mindMapFile) throws IOException, JAXBException {
         StylesConverter stylesConverter = new StylesConverter();
+        PresentationWriter presentationWriter = new PresentationWriter();
 
         createStaticFiles();
 
         XmindFile xmindFile = new XmindFile(mindMapFile);
-        XmapContent xml = xmindFile.getContent();
         XmapStyles styles = xmindFile.getStyles();
         List<CssSelector> cssSelectors = stylesConverter.createStyles(styles);
 
-        InputStream templateStream = getClass().getResourceAsStream("/template.html");
-        Template template = Mustache.compiler().compile(new InputStreamReader(templateStream));
         int automaticStylesCount = 0;
         if (styles.getAutomaticStyles() != null) {
             automaticStylesCount = stylesConverter.countAutomaticLineStyles(styles.getAutomaticStyles().getStyles());
@@ -51,21 +43,9 @@ public class Converter {
         List<Slide> slideList = createSlides(xmindFile, cssSelectors, automaticStylesCount);
         createImages(xmindFile.getImages());
 
-        try (Writer out = new OutputStreamWriter(new FileOutputStream(Configuration.OUTPUT_ROOT_DIR + File.separator + FilenameUtils.getBaseName(mindMapFile.getAbsolutePath()) + ".html"), Charset.forName("UTF-8").newEncoder())) {
-            template.execute(new Object() {
-                Object slides = slideList;
-                Object slidesCount = slideList.size();
-                Object mainTitle = slideList.get(0).getTitle();
-            }, out);
-        }
+        presentationWriter.write(FilenameUtils.getBaseName(mindMapFile.getAbsolutePath()), slideList);
         System.out.println("done");
         return null;
-    }
-
-    private String readPath(URL resource) {
-        if (System.getProperty("os.name").contains("indow") && resource.getPath().contains("!"))
-            return ".." + resource.getPath().substring(resource.getPath().indexOf("!") + 1);
-        else return resource.getPath();
     }
 
 
@@ -90,7 +70,7 @@ public class Converter {
         Files.copy(impressJs, new File(Configuration.JS_DIR + File.separator + "impress.js").toPath(), StandardCopyOption.REPLACE_EXISTING);
         impressJs.close();
         InputStream demoCss = getClass().getResourceAsStream("/css/demo.css");
-        Files.copy(demoCss, new File(Configuration.CSS_DIR + File.separator + "demo.css").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(demoCss, new File(Configuration.CSS_DIR + File.separator + "main.css").toPath(), StandardCopyOption.REPLACE_EXISTING);
         demoCss.close();
     }
 

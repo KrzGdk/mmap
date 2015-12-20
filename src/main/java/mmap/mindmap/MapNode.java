@@ -38,7 +38,7 @@ public class MapNode {
         }
     }
 
-    public int computeCoordinates(int position) {
+    int computeCoordinates(int position) {
 
         if (getChildren().size() == 0) {
             setPosition(new Position(Math.round(position * Configuration.SLIDE_WIDTH), level * Configuration.SLIDE_HEIGHT));

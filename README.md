@@ -14,6 +14,7 @@ To run the application, execute:
 ```
 java -jar mmap-1.0-jar-with-dependencies.jar input_mind_map.xmind
 ```
+To visit parent node after visiting all its children, use ``--revisit-parent`` or ``-R`` run parameter.
 ## LICENSE
 Copyright 2015 Krzysztof Gądek
 

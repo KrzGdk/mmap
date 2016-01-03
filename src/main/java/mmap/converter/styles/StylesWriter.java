@@ -12,6 +12,7 @@ public class StylesWriter {
 
     public void write(List<CssSelector> selectors) throws IOException {
         File stylesFile = new File(Configuration.CSS_DIR + File.separator + "styles.css");
+        stylesFile.createNewFile();
 
         try(FileWriter fileWriter = new FileWriter(stylesFile)) {
             fileWriter.write(selectors.stream().map(Object::toString).collect(Collectors.joining("\n")));

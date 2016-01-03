@@ -26,14 +26,13 @@ public class Converter {
         this.revisitParent = revisitParent;
     }
 
-    public String convert(File mindMapFile) throws IOException, JAXBException {
+    public void convert(File mindMapFile) throws IOException, JAXBException {
         StylesConverter stylesConverter = new StylesConverter();
         PresentationWriter presentationWriter = new PresentationWriter();
 
-        createStaticFiles();
-
         XmindFile xmindFile = new XmindFile(mindMapFile);
         XmapStyles styles = xmindFile.getStyles();
+        createStaticFiles();
         List<CssSelector> cssSelectors = stylesConverter.createStyles(styles);
 
         int automaticStylesCount = 0;
@@ -41,11 +40,11 @@ public class Converter {
             automaticStylesCount = stylesConverter.countAutomaticLineStyles(styles.getAutomaticStyles().getStyles());
         }
         List<Slide> slideList = createSlides(xmindFile, cssSelectors, automaticStylesCount);
-        createImages(xmindFile.getImages());
 
+        createImages(xmindFile.getImages());
         presentationWriter.write(FilenameUtils.getBaseName(mindMapFile.getAbsolutePath()), slideList);
+
         System.out.println("done");
-        return null;
     }
 
 
@@ -88,12 +87,13 @@ public class Converter {
         }
     }
 
-    public List<Slide> createSlides(XmindFile xmindFile, List<CssSelector> cssSelectors, int automaticStyleCount) throws IOException, JAXBException {
+    private List<Slide> createSlides(XmindFile xmindFile, List<CssSelector> cssSelectors, int automaticStyleCount) throws IOException, JAXBException {
         List<Slide> slides = new ArrayList<>();
 
         MindMap mindMap = MindMap.create(xmindFile.getContent().getSheet().getTopic());
 
         Slide titleSlide = new Slide(mindMap.getRoot());
+        titleSlide.setParent(-1);
         titleSlide.addCssClass("slide");
         slides.add(titleSlide);
 

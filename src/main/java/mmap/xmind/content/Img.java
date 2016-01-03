@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class Img {
 
     @XmlAttribute(name = "align")
-    protected String align;
+    private String align;
 
     @XmlAttribute(namespace = "http://www.w3.org/1999/xhtml", name = "src")
     private String src;

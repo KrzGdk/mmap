@@ -570,12 +570,16 @@
         var downBackStack = [];
 
         var up = function () {
-            downBackStack.push(activeStep);
-            return goto(steps[activeStep.dataset.parent]);
+            if (activeStep.dataset.parent != -1) {
+                downBackStack.push(activeStep);
+                return goto(steps[activeStep.dataset.parent]);
+            }
         }
 
         var down = function () {
-            return goto(downBackStack.pop());
+            if (downBackStack.length > 0) {
+                return goto(downBackStack.pop());
+            }
         }
         
         // Adding some useful classes to step elements.

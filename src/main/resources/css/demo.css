@@ -276,6 +276,17 @@ a:focus {
 
     Basically we remove the margin and make inactive steps a little bit transparent.
 */
+
+
+.impress-enabled .step .footer p {
+    opacity: 0;
+
+    -webkit-transition: opacity 1s;
+    -moz-transition:    opacity 1s;
+    -ms-transition:     opacity 1s;
+    -o-transition:      opacity 1s;
+    transition:         opacity 1s;
+}
 .impress-enabled .step {
     margin: 0;
     opacity: 0.3;
@@ -288,6 +299,8 @@ a:focus {
 }
 
 .impress-enabled .step.active { opacity: 1 }
+
+.impress-enabled .step.active .footer p { opacity: 1 }
 
 /*
     These 'slide' step styles were heavily inspired by HTML5 Slides:

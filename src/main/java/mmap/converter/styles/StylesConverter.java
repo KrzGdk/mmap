@@ -16,6 +16,7 @@ public class StylesConverter {
         List<Style> allStyles = new ArrayList<>();
         if (styles.getStyles() != null) {
             allStyles.addAll(styles.getStyles().getStyles());
+            createAutomaticLineStyles(styles.getStyles().getStyles(), cssSelectors);
         }
         if (styles.getAutomaticStyles() != null) {
             allStyles.addAll(styles.getAutomaticStyles().getStyles());
@@ -35,8 +36,12 @@ public class StylesConverter {
     public int countAutomaticLineStyles(List<Style> styles) {
         Optional<Style> topic = styles.stream().filter(style -> style.getTopicProperties() != null && style.getType().equals("topic")
                 && style.getTopicProperties().getMultiLineColors() != null).findFirst();
+        Optional<Style> map = styles.stream().filter(style -> style.getMapProperties() != null && style.getType().equals("topic")
+                && style.getMapProperties().getMultiLineColors() != null).findFirst();
         if (topic.isPresent()) {
             return topic.get().getTopicProperties().getMultiLineColors().split("\\s+").length;
+        } else if (map.isPresent()) {
+            return map.get().getMapProperties().getMultiLineColors().split("\\s+").length;
         }
         return 0;
     }
@@ -85,6 +90,9 @@ public class StylesConverter {
     }
 
     private List<CssClass> createMainCssClass(Style style) {
+        if (style.getTopicProperties().getFill().equals("$none$")) {
+            return new ArrayList<>();
+        }
         CssClass cssClass = new CssClass();
         cssClass.setId(style.getId());
         cssClass.getProperties().put("background-color", style.getTopicProperties().getFill());

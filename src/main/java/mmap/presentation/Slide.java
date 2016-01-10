@@ -8,7 +8,6 @@ import java.util.List;
 
 public class Slide {
     private List<String> cssClasses = new ArrayList<>();
-    private String cssSecondaryClass;
     private String title;
     private Integer dataX;
     private Integer dataY;

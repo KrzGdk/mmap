@@ -44,7 +44,6 @@ public class Converter {
         createImages(xmindFile.getImages());
         presentationWriter.write(FilenameUtils.getBaseName(mindMapFile.getAbsolutePath()), slideList);
 
-        System.out.println("done");
     }
 
 

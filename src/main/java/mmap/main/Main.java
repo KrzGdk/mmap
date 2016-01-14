@@ -22,11 +22,15 @@ public class Main {
             Converter converter = new Converter(revisitParent);
             converter.convert(new File(path));
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: No input file supplied.");
+            System.out.println("Error: Invalid input file.");
+            e.printStackTrace();
+            return;
         } catch (IOException e) {
             System.out.println("Error: Cannot read input file.");
+            return;
         } catch (JAXBException e) {
             System.out.println("Error: Ill-formed mind map file structure.");
+            return;
         }
         System.out.println("Success.");
         System.out.println("Created directory 'out' containing presentation.");

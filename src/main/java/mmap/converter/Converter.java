@@ -7,6 +7,7 @@ import mmap.mindmap.MapNode;
 import mmap.mindmap.MindMap;
 import mmap.presentation.Slide;
 import mmap.xmind.XmindFile;
+import mmap.xmind.styles.Style;
 import mmap.xmind.styles.XmapStyles;
 import org.apache.commons.io.FilenameUtils;
 
@@ -36,8 +37,16 @@ public class Converter {
         List<CssSelector> cssSelectors = stylesConverter.createStyles(styles);
 
         int automaticStylesCount = 0;
-        if (styles.getAutomaticStyles() != null) {
+        if (styles.getAutomaticStyles() != null && styles.getStyles() == null) {
             automaticStylesCount = stylesConverter.countAutomaticLineStyles(styles.getAutomaticStyles().getStyles());
+        }
+        else if (styles.getAutomaticStyles() == null && styles.getStyles() != null) {
+            automaticStylesCount = stylesConverter.countAutomaticLineStyles(styles.getStyles().getStyles());
+        }
+        if (styles.getAutomaticStyles() != null && styles.getStyles() != null) {
+            List<Style> allStyles = new ArrayList<>(styles.getStyles().getStyles());
+            allStyles.addAll(styles.getAutomaticStyles().getStyles());
+            automaticStylesCount = stylesConverter.countAutomaticLineStyles(allStyles);
         }
         List<Slide> slideList = createSlides(xmindFile, cssSelectors, automaticStylesCount);
 
@@ -108,8 +117,8 @@ public class Converter {
             Slide slide = new Slide(child);
             slide.setParent(findSlideId(root, slides));
             if (child.getLevel() == 1 && automaticStyleCount != 0) {
-                child.addCssClass("autoLine" + (i + 1) % automaticStyleCount);
-                slide.addCssClass("xmap-autoLine" + (i + 1) % automaticStyleCount);
+                child.addCssClass("autoLine" + (i % automaticStyleCount + 1));
+                slide.addCssClass("xmap-autoLine" + (i % automaticStyleCount + 1));
             }
             for (String rootCssClass : root.getCssClasses()) {
                 for (CssSelector cssSelector : cssSelectors) {

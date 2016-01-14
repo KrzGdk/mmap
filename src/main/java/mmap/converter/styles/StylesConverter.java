@@ -36,7 +36,7 @@ public class StylesConverter {
     public int countAutomaticLineStyles(List<Style> styles) {
         Optional<Style> topic = styles.stream().filter(style -> style.getTopicProperties() != null && style.getType().equals("topic")
                 && style.getTopicProperties().getMultiLineColors() != null).findFirst();
-        Optional<Style> map = styles.stream().filter(style -> style.getMapProperties() != null && style.getType().equals("topic")
+        Optional<Style> map = styles.stream().filter(style -> style.getMapProperties() != null && style.getType().equals("map")
                 && style.getMapProperties().getMultiLineColors() != null).findFirst();
         if (topic.isPresent()) {
             return topic.get().getTopicProperties().getMultiLineColors().split("\\s+").length;
@@ -51,25 +51,40 @@ public class StylesConverter {
         styles.stream().filter(style -> style.getTopicProperties() != null && style.getType().equals("topic")
                 && style.getTopicProperties().getMultiLineColors() != null).forEach(s -> {
             List<String> automaticLineColors = Arrays.asList(s.getTopicProperties().getMultiLineColors().split("\\s+"));
-            for (String automaticLineColor : automaticLineColors) {
-                CssClass cssClass = new CssClass();
-                cssClass.setId("autoLine" + index.incrementAndGet() + " .footer");
-                cssClass.getProperties().put("background-color", automaticLineColor);
+            createAutoLineSelectors(cssSelectors, index, automaticLineColors);
+        });
 
-                CssClass cssTextClass = new CssClass();
-                Color bgColor = Color.decode(automaticLineColor);
-                cssTextClass.setId("autoLine" + index.get() + " .footer p");
-                cssTextClass.getProperties().put("color", getFontColor(bgColor));
-                cssSelectors.add(cssClass);
-                cssSelectors.add(cssTextClass);
-            }
+        styles.stream().filter(style -> style.getMapProperties() != null && style.getType().equals("map")
+                && style.getMapProperties().getMultiLineColors() != null).forEach(s -> {
+            List<String> automaticLineColors = Arrays.asList(s.getMapProperties().getMultiLineColors().split("\\s+"));
+            createAutoLineSelectors(cssSelectors, index, automaticLineColors);
         });
     }
 
+    private void createAutoLineSelectors(List<CssSelector> cssSelectors, AtomicInteger index, List<String> automaticLineColors) {
+        for (String automaticLineColor : automaticLineColors) {
+            CssClass cssClass = new CssClass();
+            cssClass.setId("autoLine" + index.incrementAndGet() + " .footer");
+            cssClass.getProperties().put("background-color", automaticLineColor);
+
+            CssClass cssTextClass = new CssClass();
+            Color bgColor = Color.decode(automaticLineColor);
+            cssTextClass.setId("autoLine" + index.get() + " .footer p");
+            cssTextClass.getProperties().put("color", getFontColor(bgColor));
+            cssSelectors.add(cssClass);
+            cssSelectors.add(cssTextClass);
+        }
+    }
+
     private CssSelector createBodySelector(List<Style> styles) {
-        String bgColorHex = styles.stream()
-                .filter(s -> s.getType().equals("map"))
-                .findFirst().get().getMapProperties().getFill();
+        Optional<Style> mapBgColorStyle = styles.stream()
+                .filter(s -> s.getType().equals("map") && s.getMapProperties().getFill() != null)
+                .findFirst();
+
+        String bgColorHex = "#eeeeee";
+        if(mapBgColorStyle.isPresent()) {
+            bgColorHex = mapBgColorStyle.get().getMapProperties().getFill();
+        }
 
         CssSelector body = new CssSelector();
         body.setName("body");
@@ -90,7 +105,7 @@ public class StylesConverter {
     }
 
     private List<CssClass> createMainCssClass(Style style) {
-        if (style.getTopicProperties().getFill().equals("$none$")) {
+        if (style.getTopicProperties().getFill().contains("none")) {
             return new ArrayList<>();
         }
         CssClass cssClass = new CssClass();

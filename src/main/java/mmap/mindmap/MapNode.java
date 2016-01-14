@@ -7,6 +7,8 @@ import mmap.xmind.content.Topic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MapNode {
     private List<String> cssClasses = new ArrayList<>();
@@ -50,7 +52,6 @@ public class MapNode {
             }
             int leaves = sum - position;
             setPosition(new Position(Math.round((position + (((float) leaves) / 2) - 0.5f) * Configuration.SLIDE_WIDTH), level * Configuration.SLIDE_HEIGHT));
-
             return leaves;
         }
     }
